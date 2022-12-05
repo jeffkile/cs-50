@@ -1,4 +1,5 @@
 import csv
+import os
 import sys
 
 from util import Node, StackFrontier, QueueFrontier
@@ -53,9 +54,13 @@ def load_data(directory):
 
 
 def main():
+    # TODO remove this before submitting
+    curr_directory = os.path.dirname(os.path.realpath(__file__))
+
     if len(sys.argv) > 2:
         sys.exit("Usage: python degrees.py [directory]")
-    directory = sys.argv[1] if len(sys.argv) == 2 else "large"
+    # TODO change this back before submitting
+    directory = sys.argv[1] if len(sys.argv) == 2 else curr_directory + "/large"
 
     # Load data from files into memory
     print("Loading data...")
