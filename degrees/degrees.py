@@ -97,9 +97,42 @@ def shortest_path(source, target):
     If no possible path, returns None.
     """
 
-    # TODO
-    raise NotImplementedError
+    existing_nodes = set()
+    empty_node = Node(state=None, parent=None, action=None)
+    source_node = Node(state=source, parent=empty_node, action=None)
+    frontier = QueueFrontier()
+    frontier.add(source_node)
 
+    while frontier.empty() == False:
+        node = frontier.remove()
+        if node.state == target:
+            print("found target")
+            path_to_return = []
+            while node.parent.state != None:
+                path_to_return.append((node.action, node.state))
+                node = node.parent
+
+            path_to_return.reverse()
+            print(path_to_return)
+            return path_to_return
+
+        # Debugging
+        # name = people[node.state]["name"]
+        # parent_name = "none" if node.parent.state == None else people[node.parent.state]["name"]
+        # print(f"source: {name} parent: {parent_name}")
+
+        movies_this_source_is_in = people[node.state]["movies"]
+
+        for movie in movies_this_source_is_in:
+            actors_in_this_movie = movies[movie]["stars"]
+            for actor in actors_in_this_movie:
+                if actor != source and concat_strings(actor, movie) not in existing_nodes:
+                    new_node = Node(state=actor, parent=node, action=movie)
+                    existing_nodes.add(concat_strings(actor, movie))
+                    frontier.add(new_node)
+
+def concat_strings(string1, string2):
+    return string1 + string2
 
 def person_id_for_name(name):
     """
