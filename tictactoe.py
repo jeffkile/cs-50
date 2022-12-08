@@ -42,15 +42,23 @@ def actions(board):
     """
     Returns set of all possible actions (i, j) available on the board.
     """
-    raise NotImplementedError
+    actions = []
 
+    for row in range(board):
+        for col in range(row):
+            if board[row][col] == EMPTY:
+                actions.append((row, col))
+
+    return actions
 
 def result(board, action):
     """
     Returns the board that results from making move (i, j) on the board.
     """
-    raise NotImplementedError
 
+    board[action[0]][action[1]] = player(board)
+
+    return board
 
 def winner(board):
     """
@@ -78,6 +86,8 @@ def terminal(board):
     """
     Returns True if game is over, False otherwise.
     """
+    if winner(board) is not None:
+        return True
 
     for row in board:
         for cell in row:
