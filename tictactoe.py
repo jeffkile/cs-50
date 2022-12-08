@@ -22,8 +22,21 @@ def player(board):
     """
     Returns player who has the next turn on a board.
     """
-    raise NotImplementedError
+    count_x = 0
+    count_o = 0
 
+    for row in board:
+        for cell in row:
+            if cell == X:
+                count_x += 1
+            elif cell == O:
+                count_o += 1
+
+    if count_x > count_o:
+        return O
+
+    # Assumes X always goes first, so if X and O are equal, it's X's turn or if O has more moves, it's X's turn
+    return X
 
 def actions(board):
     """
@@ -43,22 +56,48 @@ def winner(board):
     """
     Returns the winner of the game, if there is one.
     """
-    raise NotImplementedError
+    # Check rows
+    for row in board:
+        if row[0] == row[1] == row[2] and row[0] != EMPTY:
+            return row[0]
+    
+    # Check columns
+    for i in range(3):
+        if board[0][i] == board[1][i] == board[2][i] and board[0][i] != EMPTY:
+            return board[0][i]
 
+    # Check diagonals
+    if board[0][0] == board[1][1] == board[2][2] and board[0][0] != EMPTY:
+        return board[0][0]
+    if board[0][2] == board[1][1] == board[2][0] and board[0][2] != EMPTY:
+        return board[0][2]
+
+    return None
 
 def terminal(board):
     """
     Returns True if game is over, False otherwise.
     """
-    raise NotImplementedError
 
+    for row in board:
+        for cell in row:
+            if cell == EMPTY:
+                return False
+
+    return True
 
 def utility(board):
     """
     Returns 1 if X has won the game, -1 if O has won, 0 otherwise.
     """
-    raise NotImplementedError
+    result = winner(board)
 
+    if result == X:
+        return 1
+    elif result == O:
+        return -1
+    else:
+        return 0
 
 def minimax(board):
     """
