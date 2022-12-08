@@ -3,6 +3,7 @@ Tic Tac Toe Player
 """
 
 import math
+from copy import deepcopy
 
 X = "X"
 O = "O"
@@ -44,17 +45,18 @@ def actions(board):
     """
     actions = []
 
-    for row in range(board):
-        for col in range(row):
+    for row in range(len(board)):
+        for col in range(len(board[row])):
             if board[row][col] == EMPTY:
                 actions.append((row, col))
 
     return actions
 
-def result(board, action):
+def result(b, action):
     """
     Returns the board that results from making move (i, j) on the board.
     """
+    board = deepcopy(b)
 
     board[action[0]][action[1]] = player(board)
 
@@ -109,8 +111,75 @@ def utility(board):
     else:
         return 0
 
-def minimax(board):
+def minimax(b):
     """
     Returns the optimal action for the current player on the board.
     """
-    raise NotImplementedError
+
+    board = deepcopy(b)
+
+    # Get the list of possible actions
+    action_list = actions(board)
+
+    # X is trying to maximize the score O is trying to minimize the score
+    my_player = player(board)
+
+    if my_player == X:
+        best_score = float('-inf')
+        best_action = None
+        for action in action_list:
+            new_board = result(board, action)
+            new_score = min_value(new_board)
+
+            if new_score > best_score:
+                best_score = new_score
+                best_action = action
+        
+        return best_action
+
+    else:
+        best_score = float('inf')
+        best_action = None
+        for action in action_list:
+            new_board = result(board, action)
+            new_score = max_value(new_board)
+
+            if new_score < best_score:
+                best_score = new_score
+                best_action = action
+        
+        return best_action
+
+def min_value(b):
+    board = deepcopy(b)
+
+    if terminal(board):
+        return utility(board)
+    
+    # Get the list of possible actions
+    action_list = actions(board)
+
+    best_score = float('inf')
+    for action in action_list:
+        new_board = result(board, action)
+        new_score = max_value(new_board)
+        best_score = min(new_score, best_score)
+
+    return best_score
+
+def max_value(b):
+    board = deepcopy(b)
+
+    if terminal(board):
+        return utility(board)
+    
+    # Get the list of possible actions
+    action_list = actions(board)
+
+    best_score = float('-inf')
+    for action in action_list:
+        new_board = result(board, action)
+        new_score = min_value(new_board)
+        best_score = max(new_score, best_score)
+    
+    return best_score
