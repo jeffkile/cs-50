@@ -34,7 +34,14 @@ knowledge1 = And(
 # A says "We are the same kind."
 # B says "We are of different kinds."
 knowledge2 = And(
-    # TODO
+    Or(AKnight, AKnave),
+    Not(And(AKnight, AKnave)),
+    Or(BKnight, BKnave),
+    Not(And(BKnight, BKnave)),
+    Implication(Or(And(AKnight, BKnight),And(AKnave, BKnave)), AKnight),
+    Implication(Not(Or(And(AKnight, BKnight),And(AKnave, BKnave))), AKnave),
+    Implication(Or(And(AKnight, BKnave),And(AKnave, BKnight)), BKnight),
+    Implication(Not(Or(And(AKnight, BKnave),And(AKnave, BKnight))), BKnave)
 )
 
 # Puzzle 3
@@ -43,11 +50,29 @@ knowledge2 = And(
 # B says "C is a knave."
 # C says "A is a knight."
 knowledge3 = And(
-    # TODO
+    Or(AKnight, AKnave),
+    Not(And(AKnight, AKnave)),
+    Or(BKnight, BKnave),
+    Not(And(BKnight, BKnave)),
+    Or(CKnight, CKnave),
+    Not(And(CKnight, CKnave)),
+
+    # A says either "I am a knight." or "I am a knave.", but you don't know which.
+    Implication(Or(AKnight, AKnave), AKnight),
+    Implication(Not(Or(AKnight, AKnave)), AKnave),
+
+    # B says "A said 'I am a knave'."
+    Implication(AKnave, BKnight),
+    Implication(AKnight, BKnave),
+
+    # B says "C is a knave."
+    Implication(CKnave, BKnight),
+    Implication(CKnight, BKnave),
+
+    # C says "A is a knight."
+    Implication(AKnight, CKnight),
+    Implication(AKnave, CKnave)
 )
-
-print(knowledge0.formula())
-
 
 def main():
     symbols = [AKnight, AKnave, BKnight, BKnave, CKnight, CKnave]
