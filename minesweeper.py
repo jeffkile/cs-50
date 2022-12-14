@@ -199,7 +199,11 @@ class MinesweeperAI():
         This function may use the knowledge in self.mines, self.safes
         and self.moves_made, but should not modify any of those values.
         """
-        raise NotImplementedError
+
+        if len(self.safes) == 0:
+            return None
+
+        return self.safes.pop()
 
     def make_random_move(self):
         """
