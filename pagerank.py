@@ -112,7 +112,37 @@ def sample_pagerank(corpus, damping_factor, n):
     for sample in sample_count:
         sample_probability[sample] = round(sample_count[sample] / num_samples, 3)
 
+    # sum = 0
+    # for value in sample_probability.values():
+    #     sum += value
+    # print(sum)
+
     return sample_probability
+
+def calculate_page_rank(page, d, N, corpus, page_rank):
+    random_selection_probability = (1 - d) / N
+
+    # Find all the pages that link to this page
+    links = []
+    for key in corpus:
+        if page in corpus[key]:
+            links.append(key)
+
+    # Sum up the probabilities of all of the links
+    sum = 0
+    for link in links:
+       num_links_on_this_page = len(corpus[link])
+       page_rank_value = page_rank[link]
+       sum = sum + (page_rank_value / num_links_on_this_page)
+
+    return random_selection_probability + (d * sum)
+
+def page_ranks_differ_by_more_than_001(pr1, pr2):
+    for key in pr1:
+        if abs(pr1[key] - pr2[key]) > 0.001:
+            return True
+
+    return False
 
 def iterate_pagerank(corpus, damping_factor):
     """
@@ -123,8 +153,32 @@ def iterate_pagerank(corpus, damping_factor):
     their estimated PageRank value (a value between 0 and 1). All
     PageRank values should sum to 1.
     """
-    raise NotImplementedError
+    num_pages = len(corpus)
+    initial_page_rank = round(1 / num_pages, 3)
+    page_rank = {}
 
+    for page in corpus:
+        page_rank[page] = initial_page_rank
+
+    for page in corpus:
+        if len(corpus[page]) == 0:
+            for page2 in corpus:
+                corpus[page].add(page2)
+
+    should_continue = True
+    while should_continue:
+        previous_page_rank = page_rank.copy()
+        for page in corpus:
+            page_rank[page] = calculate_page_rank(page, damping_factor, num_pages, corpus, previous_page_rank)
+
+        should_continue = page_ranks_differ_by_more_than_001(page_rank, previous_page_rank)
+
+    # sum = 0
+    # for value in page_rank.values():
+    #     sum += round(value, 3)
+    # print(sum)
+
+    return page_rank
 
 if __name__ == "__main__":
     main()
