@@ -86,7 +86,7 @@ def sample_pagerank(corpus, damping_factor, n):
     """
 
     # First start with a page at random
-    curr_page = list(corpus)[random.randint(0, len(corpus))]
+    curr_page = list(corpus)[random.randint(0, len(corpus)-1)]
     count = 0
 
     samples = []
@@ -110,7 +110,7 @@ def sample_pagerank(corpus, damping_factor, n):
     sample_probability = {}
     num_samples = len(samples)
     for sample in sample_count:
-        sample_probability[sample] = sample_count[sample] / num_samples
+        sample_probability[sample] = round(sample_count[sample] / num_samples, 3)
 
     return sample_probability
 
