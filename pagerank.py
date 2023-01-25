@@ -85,9 +85,34 @@ def sample_pagerank(corpus, damping_factor, n):
     PageRank values should sum to 1.
     """
 
+    # First start with a page at random
+    curr_page = list(corpus)[random.randint(0, len(corpus))]
+    count = 0
 
-    raise NotImplementedError
+    samples = []
+    samples.append(curr_page)
+    while count < n:
+        t_model = transition_model(corpus, curr_page, damping_factor)
 
+        # Chose a page from the transition_model
+        curr_page = random.choices(list(t_model.keys()), weights=list(t_model.values()))[0]
+        samples.append(curr_page)
+        count = count + 1
+
+    # Group the samples together
+    sample_count = {}
+    for sample in samples:
+        if sample in sample_count:
+            sample_count[sample] = sample_count[sample] + 1
+        else:
+            sample_count[sample] = 1
+
+    sample_probability = {}
+    num_samples = len(samples)
+    for sample in sample_count:
+        sample_probability[sample] = sample_count[sample] / num_samples
+
+    return sample_probability
 
 def iterate_pagerank(corpus, damping_factor):
     """
