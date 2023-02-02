@@ -176,17 +176,17 @@ def joint_probability(people, one_gene, two_genes, have_trait):
 
             # Now we have the probability that the person has the gene multiply that by the probability that they have the trait
             if person in two_genes:
-                if have_trait[person]:
+                if person in have_trait:
                     individual_probability = individual_probability * PROBS["trait"][2][True]
                 else:
                     individual_probability = individual_probability * PROBS["trait"][2][False]
             elif person in one_gene:
-                if have_trait[person]:
+                if person in have_trait:
                     individual_probability = individual_probability * PROBS["trait"][1][True]
                 else:
                     individual_probability = individual_probability * PROBS["trait"][1][False]
             else:
-                if have_trait[person]:
+                if person in have_trait:
                     individual_probability = individual_probability * PROBS["trait"][0][True]
                 else:
                     individual_probability = individual_probability * PROBS["trait"][0][False]
@@ -196,17 +196,17 @@ def joint_probability(people, one_gene, two_genes, have_trait):
 
             # We know the trait and gene so only mutliply in both
             if person in two_genes:
-                if have_trait[person]:
+                if person in have_trait:
                     individual_probability = individual_probability * PROBS["gene"][2] * PROBS["trait"][2][True]
                 else:
                     individual_probability = individual_probability * PROBS["gene"][2] * PROBS["trait"][2][False]
             elif person in one_gene:
-                if have_trait[person]:
+                if person in have_trait:
                     individual_probability = individual_probability * PROBS["gene"][1] * PROBS["trait"][1][True]
                 else:
                     individual_probability = individual_probability * PROBS["gene"][1] * PROBS["trait"][1][False]
             else:
-                if have_trait[person]:
+                if person in have_trait:
                     individual_probability = individual_probability * PROBS["gene"][0] * PROBS["trait"][0][True]
                 else:
                     individual_probability = individual_probability * PROBS["gene"][0] * PROBS["trait"][0][False]
@@ -232,7 +232,7 @@ def update(probabilities, one_gene, two_genes, have_trait, p):
             else:
                 probabilities[person]['gene'][0] += p
 
-            if have_trait[person]:
+            if person in have_trait:
                 probabilities[person]['trait'][True] += p
             else:
                 probabilities[person]['trait'][False] += p
