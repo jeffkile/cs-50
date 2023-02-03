@@ -102,10 +102,13 @@ class CrosswordCreator():
 
         # Make sure every value in the variables domain has the same number of letters as the variables length
         for variable in self.domains:
+            items_to_remove = []
             for word in self.domains[variable]:
                 if len(word) != variable.length:
-                    # This may result in an error about the size changining while we iterate over it
-                    self.domains[variable].remove(word)
+                    items_to_remove.append(word)
+            for item in items_to_remove:
+                self.domains[variable].remove(item)
+
 
     def revise(self, x, y):
         """
@@ -122,11 +125,12 @@ class CrosswordCreator():
         # For any pair of variables v1, v2, their overlap is either:
         #    None, if the two variables do not overlap; or
         #    (i, j), where v1's ith character overlaps v2's jth character
-        overlaps = self.crossword.overlaps(x, y)
+        overlaps = self.crossword.overlaps[x, y]
         if overlaps != None:
             (i, j) = overlaps
 
             # Remove from x if it's incompatable with y
+            items_to_remove = []
             for word_in_x in self.domains[x]:
                 found_a_match = False
                 for word_in_y in self.domains[y]:
@@ -134,8 +138,11 @@ class CrosswordCreator():
                         found_a_match = True
                         break
                 if found_a_match == False:
-                    self.domains[x].remove(word_in_x)
+                    items_to_remove.append(word_in_x)
                     revision_was_made = True
+
+            for item in items_to_remove:
+                self.domains[x].remove(item)
 
         return revision_was_made
 
@@ -157,16 +164,16 @@ class CrosswordCreator():
             # Find all of the arcs by going through all of the variables and seeing if they intersect
             for var in self.domains:
                 for neighbor in self.crossword.neighbors(var):
-                    queue.append(var, neighbor)
+                    queue.append((var, neighbor))
 
         while len(queue) > 0:
             (x, y) = queue.pop()
             if self.revise(x, y):
-                if len(self.domains[x] == 0):
+                if len(self.domains[x]) == 0:
                     return False
                 for z in self.crossword.neighbors(x):
                     if z != y:
-                        queue.append(z, x)
+                        queue.append((z, x))
 
         return True
 
@@ -203,7 +210,7 @@ class CrosswordCreator():
         # Check that there are no conflicts between neighboring variables
         for var in assignment:
             for neighbor in self.crossword.neighbors(var):
-                i, j = self.crossword.overlaps(var, neighbor)
+                i, j = self.crossword.overlaps[var, neighbor]
                 if assignment[var][i] != assignment[var][j]:
                     return False
 
