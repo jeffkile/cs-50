@@ -175,14 +175,39 @@ class CrosswordCreator():
         Return True if `assignment` is complete (i.e., assigns a value to each
         crossword variable); return False otherwise.
         """
-        raise NotImplementedError
+
+        for variable in self.domains:
+            if assignment[variable] != self.domains[variable][0]:
+                return False
+        return True
 
     def consistent(self, assignment):
         """
         Return True if `assignment` is consistent (i.e., words fit in crossword
         puzzle without conflicting characters); return False otherwise.
         """
-        raise NotImplementedError
+
+        # Check that all values are distinct
+        for var1 in assignment:
+            for var2 in assignment:
+                if var1 != var2 and assignment[var1] == assignment[var2]:
+                    return False
+        # Passes distinct check
+
+        # Check that every value is the correct length
+        for var in assignment:
+            if var.length != len(assignment[var]):
+                return False
+        # Passes size check
+
+        # Check that there are no conflicts between neighboring variables
+        for var in assignment:
+            for neighbor in self.crossword.neighbors(var):
+                i, j = self.crossword.overlaps(var, neighbor)
+                if assignment[var][i] != assignment[var][j]:
+                    return False
+
+        return True
 
     def order_domain_values(self, var, assignment):
         """
