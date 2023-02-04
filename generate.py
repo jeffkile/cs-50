@@ -184,7 +184,7 @@ class CrosswordCreator():
         """
 
         for variable in self.domains:
-            if assignment[variable] != self.domains[variable][0]:
+            if variable not in assignment:
                 return False
         return True
 
@@ -210,9 +210,10 @@ class CrosswordCreator():
         # Check that there are no conflicts between neighboring variables
         for var in assignment:
             for neighbor in self.crossword.neighbors(var):
-                i, j = self.crossword.overlaps[var, neighbor]
-                if assignment[var][i] != assignment[var][j]:
-                    return False
+                if neighbor in assignment:
+                    i, j = self.crossword.overlaps[var, neighbor]
+                    if assignment[var][i] != assignment[neighbor][j]:
+                        return False
 
         return True
 
@@ -275,8 +276,20 @@ class CrosswordCreator():
 
         If no assignment is possible, return None.
         """
-        raise NotImplementedError
 
+        if self.assignment_complete(assignment):
+            return assignment
+
+        var = self.select_unassigned_variable(assignment)
+
+        for value in self.domains[var]:
+            assignment_new = assignment.copy()
+            assignment_new[var] = value
+            if self.consistent(assignment_new):
+                # Call AC-3 with all arcs of x
+                result = self.backtrack(assignment_new)
+                if result != None:
+                    return result
 
 def main():
 
