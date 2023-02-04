@@ -282,7 +282,7 @@ class CrosswordCreator():
 
         var = self.select_unassigned_variable(assignment)
 
-        for value in self.domains[var]:
+        for value in self.order_domain_values(var, assignment):
             assignment_new = assignment.copy()
             assignment_new[var] = value
             if self.consistent(assignment_new):
