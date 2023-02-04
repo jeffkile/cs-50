@@ -286,7 +286,7 @@ class CrosswordCreator():
             assignment_new = assignment.copy()
             assignment_new[var] = value
             if self.consistent(assignment_new):
-                # Optional speed up: Call AC-3 with all arcs of x here
+                # Call AC-3 with all arcs of x
                 result = self.backtrack(assignment_new)
                 if result != None:
                     return result
