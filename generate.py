@@ -230,6 +230,9 @@ class CrosswordCreator():
         for word in self.domains[var]:
             count = 0
             for neighbor in neighbors:
+                # If neighbor has already been assigned then ignore it
+                if neighbor in assignment:
+                    continue
                 for neighbor_word in self.domains[neighbor]:
                     if neighbor_word == word:
                         count = count + 1
@@ -246,7 +249,22 @@ class CrosswordCreator():
         degree. If there is a tie, any of the tied variables are acceptable
         return values.
         """
-        raise NotImplementedError
+
+        min_vals = float('inf')
+        for var in self.domains:
+            if var not in assignment and len(self.domains[var]) < min_vals:
+                min_vals = len(self.domains[var])
+
+        max_degree = float('-inf')
+        chosen_var = None
+        for var in self.domains:
+            if var not in assignment and len(self.domains[var]) == min_vals:
+                num_neighbors = len(self.crossword.neighbors(var))
+                if num_neighbors > max_degree:
+                    max_degree = num_neighbors
+                    chosen_var = var
+
+        return chosen_var
 
     def backtrack(self, assignment):
         """
