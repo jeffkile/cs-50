@@ -101,11 +101,10 @@ class NimAI():
         Return the Q-value for the state `state` and the action `action`.
         If no Q-value exists yet in `self.q`, return 0.
         """
-        tuple_state =  tuple(e for e in state)
 
-        q_val = self.q[tuple_state, action]
-
-        if q_val is None:
+        try:
+            q_val = self.q[tuple(state), action]
+        except Exception as e:
             return 0
 
         return q_val
@@ -128,8 +127,7 @@ class NimAI():
 
         new_val_estimate = reward + future_rewards
 
-        tuple_state =  tuple(e for e in state)
-        self.q[tuple_state, action] = old_q + (self.alpha * (new_val_estimate - old_q))
+        self.q[tuple(state), action] = old_q + (self.alpha * (new_val_estimate - old_q))
 
 
     def best_future_reward(self, state):
