@@ -140,7 +140,23 @@ class NimAI():
         Q-value in `self.q`. If there are no available actions in
         `state`, return 0.
         """
-        raise NotImplementedError
+
+        # Get all possible actions for a state
+        actions = Nim.available_actions(state)
+
+        # Check the q value of all of those state, action pairs
+        best_future_reward = 0
+        for action in actions:
+            q_val = None
+            try:
+                q_val = self.q[tuple(state), action]
+            except Exception as e:
+                continue
+            if q_val is not None and q_val > best_future_reward:
+                best_future_reward = q_val
+
+        # Return the best one
+        return best_future_reward
 
     def choose_action(self, state, epsilon=True):
         """
@@ -157,7 +173,35 @@ class NimAI():
         If multiple actions have the same Q-value, any of those
         options is an acceptable return value.
         """
-        raise NotImplementedError
+
+        actions = Nim.available_actions(state)
+
+        if epsilon and random.random() < self.epsilon:
+            # Choose something randomly
+            return random.sample(actions, 1)[0]
+        else:
+            highest_q_value = 0
+            best_action = None
+            for action in actions:
+                q_val = None
+                try:
+                    q_val = self.q[tuple(state), action]
+                except Exception as e:
+                    q_val = 0
+
+                state_if_action_taken =  state.copy()
+                pile, count = action
+                state_if_action_taken[pile] -= count
+                future_reward = self.best_future_reward(state_if_action_taken)
+                if q_val + future_reward > highest_q_value:
+                    highest_q_value = q_val + future_reward
+                    best_action = action
+
+        if best_action is None:
+            return random.sample(actions, 1)[0]
+
+        return best_action
+
 
 
 def train(n):
