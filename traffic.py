@@ -93,7 +93,7 @@ def get_model():
         ),
 
         # Max-pooling layer with 2x2 pool size
-        # tf.keras.layers.MaxPool2D(pool_size=(2,2)),
+        tf.keras.layers.MaxPool2D(pool_size=(2,2)),
 
         # Convolutional layer, 64 filters using 3x3 kernal
         tf.keras.layers.Conv2D(
@@ -101,7 +101,7 @@ def get_model():
         ),
 
         # Max-pooling layer with 2x2 pool size
-        # tf.keras.layers.MaxPool2D(pool_size=(2,2)),
+        tf.keras.layers.MaxPool2D(pool_size=(2,2)),
 
         # Convolutional layer, 64 filters using 3x3 kernal
         tf.keras.layers.Conv2D(
