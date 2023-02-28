@@ -1,6 +1,9 @@
 import nltk
 import sys
 
+nltk.download('punkt')
+
+
 TERMINALS = """
 Adj -> "country" | "dreadful" | "enigmatical" | "little" | "moist" | "red"
 Adv -> "down" | "here" | "never"
