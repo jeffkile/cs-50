@@ -89,8 +89,22 @@ def np_chunk(tree):
     whose label is "NP" that does not itself contain any other
     noun phrases as subtrees.
     """
-    raise NotImplementedError
 
+    # Get all of the noun phrases
+    np_trees = list(tree.subtrees(lambda t1: t1.label() == "NP"))
+
+    chunks = []
+    found_nouns = []
+    for np_tree in np_trees:
+        nouns = list(np_tree.subtrees(lambda t: t.label() == 'N'))
+        # Get the root noun phrases that don't contain other nounts
+        if len(nouns) == 1:
+            # Add that noun phrase only once, add the full phrase
+            if nouns[0] not in found_nouns:
+                chunks.append(np_tree)
+                found_nouns.append(nouns[0])
+
+    return chunks
 
 if __name__ == "__main__":
     main()
